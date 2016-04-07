@@ -6,6 +6,7 @@ byte values[6] ;
 char output[512];
 byte base[3];
 byte reading[3];
+int nDevices;
 
 void setup(){
   Wire.begin();
