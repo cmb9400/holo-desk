@@ -53,32 +53,32 @@ void cali() {
   last[2] = 0;
   readAccel();
 
-  while (true) {
-    if (!(reading[0] == 0 || reading[1] == 0 || reading[2] == 0)) {
-      if ((last[0] == reading[0] || last[1] == reading[1] || last[2] == reading[2])) {
-        count++;
-        if (count > 5) {
-          base[0] = last[0];
-          base[1] = last[1];
-          base[2] = last[2];
-          break;
-        } else {
-          readAccel();
-          delay(200);
-        }
-      } else {
-        last[0] = reading[0];
-        last[1] = reading[1];
-        last[2] = reading[2];
-        count = 0;
-        readAccel();
-        delay(200);
-      }
-    } else {
-      count = 0;
-      readAccel();
-      delay(200);
-    }
+  while (true) { // Comment your code dylan
+    if (!(reading[0] == 0 || reading[1] == 0 || reading[2] == 0)) { // Comment your code dylan
+      if ((last[0] == reading[0] || last[1] == reading[1] || last[2] == reading[2])) { // Comment your code dylan
+        count++; // Comment your code dylan
+        if (count > 5) { // Comment your code dylan
+          base[0] = last[0]; // Comment your code dylan
+          base[1] = last[1]; // Comment your code dylan
+          base[2] = last[2]; // Comment your code dylan
+          break; // Comment your code dylan
+        } else { // Comment your code dylan
+          readAccel(); // Comment your code dylan
+          delay(200); // Comment your code dylan
+        } // Comment your code dylan
+      } else { // Comment your code dylan
+        last[0] = reading[0]; // Comment your code dylan
+        last[1] = reading[1]; // Comment your code dylan
+        last[2] = reading[2]; // Comment your code dylan
+        count = 0; // Comment your code dylan
+        readAccel(); // Comment your code dylan
+        delay(200); // Comment your code dylan
+      } // Comment your code dylan
+    } else { // Comment your code dylan
+      count = 0; // Comment your code dylan
+      readAccel(); // Comment your code dylan
+      delay(200); // Comment your code dylan
+    } // Comment your code dylan
   }
   Serial.println("Done Calibrating");
 }
