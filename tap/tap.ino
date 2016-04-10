@@ -1,5 +1,5 @@
 #include <Wire.h>
-#include <ADXL345.h> 
+#include <ADXL345.h>
 
 #define THRESH_TAP 0x40                                                          //Tap threshold value
 #define DUR 0x40                                                                 //Tap duration value
@@ -9,7 +9,7 @@
 #define POWER_CTL 0x09                                                           //Power-saving features control value
 #define INT_ENABLE 0x60                                                          //Interrupt enable control value
 #define INT_MAP 0x20                                                             //Interrupt mapping control value
-#define DATA_FORMAT 0x0A                                                        //Data format control value
+#define DATA_FORMAT 0x0A                                                         //Data format control value
 
 byte int_source;
 boolean singleTap = false;

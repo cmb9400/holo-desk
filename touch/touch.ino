@@ -3,7 +3,7 @@
 #define xyzregister (0x32)
 #define accel_module (0x53)
 
-byte values[6] ;
+byte values[6];
 char output[512];
 byte base[3];
 byte reading[3];
