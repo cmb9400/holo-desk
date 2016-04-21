@@ -4,37 +4,27 @@
 #define accel_module (0x53)
 
 byte values[6];
-char output[512];
 byte base[3];
 byte reading[3];
 
 void setup() {
   Wire.begin();
-  Serial.begin(9600);
   initAccel();
   cali();
-  sprintf(output, "BASE: %d %d %d\n", base[0], base[1], base[2]);
-  Serial.print(output);
   delay(200);
   pinMode(31, OUTPUT);
   for (int i = 2; i >= 0; i--) {
-    digitalWrite(31, HIGH);
-    delay(100); 
-    digitalWrite(31, LOW);
-    delay(100); 
+    blinkLed();
   }
 }
 
 void loop(){
   readAccel();
-  int diff = abs(base[0]-reading[0]) + abs(base[1]-reading[1]) + abs(base[2]-reading[2]);
-  if (diff > 300) {
-    sprintf(output, "%d\n", diff);
-    Serial.print(output);
-    digitalWrite(31, HIGH);
-    delay(100); 
-    digitalWrite(31, LOW);
+  int diff = abs(base[2]-reading[2]);
+  if (diff > 5) {
+    blinkLed();
   }
+  delay(25);
 }
 
 void initAccel() {
@@ -54,42 +44,21 @@ void initAccel() {
 }
 
 void cali() {
-  Serial.println("Starting Calibration");
-  byte last[3];
-  int count;
-  last[0] = 0;
-  last[1] = 0;
-  last[2] = 0;
+  unsigned long temp[3] = { 0, 0, 0 };
+  int loops = 1000;
   readAccel();
-
-  while (true) { // Comment your code dylan
-    if (!(reading[0] == 0 || reading[1] == 0 || reading[2] == 0)) { // Comment your code dylan
-      if ((last[0] == reading[0] || last[1] == reading[1] || last[2] == reading[2])) { // Comment your code dylan
-        count++; // Comment your code dylan
-        if (count > 5) { // Comment your code dylan
-          base[0] = last[0]; // Comment your code dylan
-          base[1] = last[1]; // Comment your code dylan
-          base[2] = last[2]; // Comment your code dylan
-          break; // Comment your code dylan
-        } else { // Comment your code dylan
-          readAccel(); // Comment your code dylan
-          delay(200); // Comment your code dylan
-        } // Comment your code dylan
-      } else { // Comment your code dylan
-        last[0] = reading[0]; // Comment your code dylan
-        last[1] = reading[1]; // Comment your code dylan
-        last[2] = reading[2]; // Comment your code dylan
-        count = 0; // Comment your code dylan
-        readAccel(); // Comment your code dylan
-        delay(200); // Comment your code dylan
-      } // Comment your code dylan
-    } else { // Comment your code dylan
-      count = 0; // Comment your code dylan
-      readAccel(); // Comment your code dylan
-      delay(200); // Comment your code dylan
-    } // Comment your code dylan
+  while (!(reading[0] + reading[1] + reading[2])); //wait
+  while (loops) { // read 1000 times and add to temp
+    readAccel();
+    temp[0] = reading[0] + temp[0];
+    temp[1] = reading[1] + temp[1];
+    temp[2] = reading[2] + temp[2];
+    loops--;
   }
-  Serial.println("Done Calibrating");
+  // take an average of the data
+  base[0] = (byte)(temp[0] / 1000);
+  base[1] = (byte)(temp[1] / 1000);
+  base[2] = (byte)(temp[2] / 1000);
 }
 
 void readAccel() {
@@ -107,6 +76,13 @@ void readAccel() {
   reading[0] = (((int)values[1]) << 8) | values[0];
   reading[1] = (((int)values[3]) << 8) | values[2];
   reading[2] = (((int)values[5]) << 8) | values[4];
-  sprintf(output, "BASE: %d %d %d\n", reading[0], reading[1], reading[2]);
-
 }
+
+void blinkLed() {
+  digitalWrite(31, HIGH);
+  delay(100); 
+  digitalWrite(31, LOW);
+  delay(100); 
+}
+
+
