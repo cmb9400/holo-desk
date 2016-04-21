@@ -16,15 +16,24 @@ void setup() {
   sprintf(output, "BASE: %d %d %d\n", base[0], base[1], base[2]);
   Serial.print(output);
   delay(200);
+  pinMode(31, OUTPUT);
+  for (int i = 2; i >= 0; i--) {
+    digitalWrite(31, HIGH);
+    delay(100); 
+    digitalWrite(31, LOW);
+    delay(100); 
+  }
 }
 
 void loop(){
   readAccel();
   int diff = abs(base[0]-reading[0]) + abs(base[1]-reading[1]) + abs(base[2]-reading[2]);
-  if (diff > 10) {
-    sprintf(output, "%d %d %d\n", reading[0],reading[1] ,reading[2]);
+  if (diff > 300) {
+    sprintf(output, "%d\n", diff);
     Serial.print(output);
-    delay(200);
+    digitalWrite(31, HIGH);
+    delay(100); 
+    digitalWrite(31, LOW);
   }
 }
 
@@ -98,4 +107,6 @@ void readAccel() {
   reading[0] = (((int)values[1]) << 8) | values[0];
   reading[1] = (((int)values[3]) << 8) | values[2];
   reading[2] = (((int)values[5]) << 8) | values[4];
+  sprintf(output, "BASE: %d %d %d\n", reading[0], reading[1], reading[2]);
+
 }
