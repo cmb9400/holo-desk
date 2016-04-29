@@ -4,7 +4,7 @@ boolean click = false;
 
 void setup() {
   Serial.begin(9600);
-  attachInterrupt(2, interrupt, RISING);
+  attachInterrupt(digitalPinToInterrupt(2), interrupt, RISING);
 }
 
 void loop() {
@@ -15,9 +15,8 @@ void loop() {
 }
 
 void interrupt() {
-  detachInterrupt(2);
-  Serial.println("swag is go");
+  detachInterrupt(digitalPinToInterrupt(2));
   click = true;
-  attachInterrupt(2, interrupt, RISING);
+  attachInterrupt(digitalPinToInterrupt(2), interrupt, RISING);
 }
 
