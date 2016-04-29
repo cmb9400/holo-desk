@@ -13,8 +13,12 @@ void setup() {
   cali();
   delay(200);
   pinMode(31, OUTPUT);
+  pinMode(35, OUTPUT);
   for (int i = 2; i >= 0; i--) {
-    blinkLed();
+    digitalWrite(31, HIGH);
+    delay(100); 
+    digitalWrite(31, LOW);
+    delay(100);
   }
 }
 
@@ -22,7 +26,7 @@ void loop(){
   readAccel();
   int diff = abs(base[2]-reading[2]);
   if (diff > 5) {
-    blinkLed();
+    tap();
   }
   delay(25);
 }
@@ -78,11 +82,12 @@ void readAccel() {
   reading[2] = (((int)values[5]) << 8) | values[4];
 }
 
-void blinkLed() {
+void tap() {
   digitalWrite(31, HIGH);
+  digitalWrite(35, HIGH);
   delay(100); 
   digitalWrite(31, LOW);
-  delay(100); 
+  digitalWrite(35, LOW);
 }
 
 
