@@ -17,6 +17,9 @@ void setup() {
 }
 
 void loop() {
+  if (state == CLICK) {
+    delay(500);
+  }
   switch(state) {
     case CLICK:
       Mouse.click();
