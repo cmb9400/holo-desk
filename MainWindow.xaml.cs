@@ -57,6 +57,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
         /// </summary>
         private string statusText = null;
 
+        private MouseStreamNet mouseStream = null;
         private StreamWriter imgWriter = null;
 
         /// <summary>
@@ -98,6 +99,9 @@ namespace Microsoft.Samples.Kinect.DepthBasics
             // initialize the components (controls) of the window
             this.InitializeComponent();
 
+            // init the net connections
+            this.mouseStream = new MouseStreamNet();
+
             // start the python script
             ProcessStartInfo start = new ProcessStartInfo();
             start.FileName = "C:\\Users\\Holodesk\\AppData\\Local\\Programs\\Python\\Python35-32\\python.exe";
@@ -109,11 +113,12 @@ namespace Microsoft.Samples.Kinect.DepthBasics
             start.CreateNoWindow = false;
 
 
+
             try
             {
                 Process p = new Process();
                 p.StartInfo = start;
-                p.OutputDataReceived += (sender, args) => Console.WriteLine(args.Data);
+                p.OutputDataReceived += this.mouseStream.DataReceived;
                 p.Start();
                 p.BeginOutputReadLine();
                 p.BeginErrorReadLine();
