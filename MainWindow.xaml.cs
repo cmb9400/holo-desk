@@ -101,7 +101,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
             // start the python script
             ProcessStartInfo start = new ProcessStartInfo();
             start.FileName = "C:\\Users\\Holodesk\\AppData\\Local\\Programs\\Python\\Python35-32\\python.exe";
-            start.Arguments = "camera.py | mouse.py";
+            start.Arguments = "scripts/camera.py";
             start.UseShellExecute = false;
             start.RedirectStandardInput = true;
             start.RedirectStandardOutput = true;
