@@ -100,7 +100,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
             this.InitializeComponent();
 
             // init the net connections
-            this.mouseStream = new MouseStreamNet(enable: false);
+            this.mouseStream = new MouseStreamNet(enable: true);
 
             // start the python script
             ProcessStartInfo start = new ProcessStartInfo();
@@ -340,11 +340,12 @@ namespace Microsoft.Samples.Kinect.DepthBasics
                 depth += (ushort)(slopeX * col);
 
                 // Anything beyond our max, or less then our width, push to min
-                depth = (depth >= bottom) ? minDepth : depth;
-                depth = (depth <= (bottom - width)) ? minDepth : depth;
+                // otherwise 'brighten' the value
+                double scale = 1.6;
+                depth = (ushort)((depth >= bottom) ? minDepth : (int)depth * scale);
+                depth = (ushort)((depth <= (bottom - width)) ? minDepth : (int)depth * scale);
 
-                // clip
-                // this.depthPixels[i] = (byte)(depth >= minDepth && depth <= maxDepth ? (depth / MapDepthToByte) : 0);
+                // Convert
                 this.depthPixels[i] = (byte)(depth / MapDepthToByte);
             }
 

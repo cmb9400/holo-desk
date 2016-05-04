@@ -15,12 +15,22 @@ namespace Microsoft.Samples.Kinect.DepthBasics
         private StreamWriter netStream = null;
         private bool enabled;
 
-        public MouseStreamNet(bool enable = true)
+        public MouseStreamNet(bool enable = true, string address = "129.21.207.17", int port = 1313)
         {
             this.enabled = enable;
-            if (enable)
+            if (this.enabled)
             {
-                this.client = new TcpClient("129.21.207.17", 1313);
+                try
+                {
+                    this.client = new TcpClient(address, port);
+                }
+                catch (SocketException se)
+                {
+                    this.enabled = false;
+                    Console.WriteLine("failed to connect to mouse");
+                    Console.WriteLine(se.Message);
+                    return;
+                }
                 NetworkStream ns = this.client.GetStream();
                 this.netStream = new StreamWriter(ns);
             }
@@ -34,7 +44,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
             {
                 this.netStream.WriteLine(args.Data);
                 this.netStream.Flush();
-            } catch (IOException e)
+            } catch (Exception e)
             {
                 Console.Error.WriteLine(e.Message);
             }
