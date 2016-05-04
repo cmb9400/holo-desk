@@ -1,36 +1,40 @@
 import socket
 import sys
 import struct
+import serial
 
+#to send to the leonardo
+ser = serial.Serial('/dev/ttyUSB0', 115200)
+ser.write("1000010000.".encode('utf-8'))
+
+#networking horseshit
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-
-server_address = ('localhost', 1313)
+server_address = ('0.0.0.0', 1313)
 sock.bind(server_address)
-
 sock.listen(1)
+connection, client_address = sock.accept()
+print(connection, client_address)
+connection = connection.makefile()
 
-current_coord = 'x'
+def toLeoCoords(xIn, yIn):
+    """
+    Our input is expected to be in the ranges:
+      xIn: [0, 1920]
+      yIn: [0, 1080]
+
+    This function will scale these values to the system
+    of the Arduino Leonardo in the ranges:
+      x: [0, 32767]
+      y: [0, 32767]
+
+    returned as a tuple: (x, y)
+    """
+    pass
+    #newX = 
+
 while True:
-    connection, client_address = sock.accept()
+    kinectCoords = connection.readline()[:-1].split(' ')
+    
 
-    try:
-        for i in range(0, 2):
-            data = connection.recv(16)
-            if data:
-                int_data = int.from_bytes(data, byteorder = 'big')
-                int_data *= 65535
-
-                if current_coord == 'x':
-                    int_data /= 1920
-                    current_coord = 'y'
-                elif current_coord == 'y':
-                    int_data /= 1080
-                    current_coord = 'x'
-
-                print(str(int_data))
-                # Do something with data
-            else:
-                break
-    finally:
-        connection.close()
+connection.close()
