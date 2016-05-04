@@ -30,11 +30,29 @@ def toLeoCoords(xIn, yIn):
 
     returned as a tuple: (x, y)
     """
-    pass
-    #newX = 
+    newX = int(32767 * (xIn / 1920))
+    newY = int(32767 * (yIn / 1080))
+    return (newX, newY)
+
+def toWriteOutString(leoCoords):
+    """
+    Convert a tuple of two integers to a string to send
+    to the Arduino Leonardo in the format:
+
+      xxxxxyyyyy.
+
+    where xxxxx is a right-aligned x coordinate precceded by 0's,
+          yyyyy is a right-aligned y coordinate precceded by 0's,
+    and a '.' terminates the string.
+    """
+    numZerosX = 5 - len(str(leoCoords[0]))
+    numZerosY = 5 - len(str(leoCoords[1]))
+    return ('0'*numZerosX)+str(leoCoords[0])+('0'*numZerosX)+str(leoCoords[1])+'.'
 
 while True:
     kinectCoords = connection.readline()[:-1].split(' ')
-    
+    leoCoords = toLeoCoords(kinectCoords[0], kinectCoords[1])
+    writeOutStr = toWriteOutString(leoCoords)
+    ser.write(writeOutStr.encode('utf-8'))
 
 connection.close()
