@@ -1,5 +1,4 @@
 #include "HID-Project.h"
-#include <SoftwareSerial.h> //a dependancy to allow us to differentiate input from the pi and from the mega
 #include <AltSoftSerial.h>
 
 //  See HID Project documentation for more infos
@@ -22,11 +21,7 @@ enum states {
 
 enum states state = NO_CLICK;
 
-//SoftwareSerial mySerial(10 , 11);
-
 void interrupt() {
-  //AbsoluteMouse.moveTo(32767,32767);
-  //detachInterrupt(digitalPinToInterrupt(2));
   switch(state) {
     case NO_CLICK:
       state = CLICK;
@@ -37,19 +32,14 @@ void interrupt() {
     case DRAG:
       state = RELEASE;
   }
-  //attachInterrupt(digitalPinToInterrupt(2), interrupt, RISING);
 }
 
 void setup() {
-  Serial.begin(115200);    // serial / USB port
-  //while (!Serial) {}
-  //altSerial.begin(115200);
   mySerial.begin(115200);
-  //while (!mySerial) {}
+  Serial.begin(115200, SERIAL_8E1);    // serial / USB port
+  while (!Serial);
   AbsoluteMouse.begin();
   attachInterrupt(digitalPinToInterrupt(2), interrupt, RISING); //interrupt pin from Mega
-  
-  delay(2000);
 }
 
 void loop() {
@@ -80,14 +70,13 @@ void loop() {
   if (mySerial.available()) {
     cmd = (mySerial.readStringUntil('.'));
     mySerial.println(cmd);
+    Serial.println(cmd);
     String dx = cmd.substring(0,5);
-    String dy = cmd.substring(5,9);
+    String dy = cmd.substring(5,10);
+    Serial.println(dx + " " + dy);
     int x = dx.toInt();
     int y = dy.toInt();
     AbsoluteMouse.moveTo(x,y);
-  }
-  else {
-    Serial.println("Serial connection failed");
   }
   
 }

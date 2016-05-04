@@ -4,7 +4,7 @@ import struct
 import serial
 
 #to send to the leonardo
-ser = serial.Serial('/dev/ttyUSB0', 9600)
+ser = serial.Serial('/dev/ttyUSB0', 115200, parity=serial.PARITY_EVEN)
 ser.write("1000010000.".encode('utf-8'))
 
 #networking horseshit
