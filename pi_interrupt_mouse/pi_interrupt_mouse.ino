@@ -36,7 +36,7 @@ void interrupt() {
 
 void setup() {
   mySerial.begin(115200);
-  Serial.begin(115200);    // serial / USB port
+  Serial.begin(115200, SERIAL_8E1);    // serial / USB port
   while (!Serial);
   AbsoluteMouse.begin();
   attachInterrupt(digitalPinToInterrupt(2), interrupt, RISING); //interrupt pin from Mega
