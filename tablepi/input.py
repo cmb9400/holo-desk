@@ -4,7 +4,7 @@ import struct
 import serial
 
 #to send to the leonardo
-ser = serial.Serial('/dev/ttyUSB0', 115200)
+ser = serial.Serial('/dev/ttyUSB0', 9600)
 ser.write("1000010000.".encode('utf-8'))
 
 #networking horseshit
@@ -14,7 +14,7 @@ server_address = ('0.0.0.0', 1313)
 sock.bind(server_address)
 sock.listen(1)
 connection, client_address = sock.accept()
-print(connection, client_address)
+#print(connection, client_address)
 connection = connection.makefile()
 
 def toLeoCoords(xIn, yIn):
@@ -30,8 +30,8 @@ def toLeoCoords(xIn, yIn):
 
     returned as a tuple: (x, y)
     """
-    newX = int(32767 * (xIn / 1920))
-    newY = int(32767 * (yIn / 1080))
+    newX = int(32767 * (int(xIn) / 1920))
+    newY = int(32767 * (int(yIn) / 1080))
     return (newX, newY)
 
 def toWriteOutString(leoCoords):
@@ -47,12 +47,28 @@ def toWriteOutString(leoCoords):
     """
     numZerosX = 5 - len(str(leoCoords[0]))
     numZerosY = 5 - len(str(leoCoords[1]))
-    return ('0'*numZerosX)+str(leoCoords[0])+('0'*numZerosX)+str(leoCoords[1])+'.'
+    print(" Coords from Kinect are ", leoCoords, end="")
+    return ('0'*numZerosX)+str(leoCoords[0])+('0'*numZerosY)+str(leoCoords[1])+'.'
+
+def ValidityCheck(writeOutString):
+    xOut = int(writeOutString[0:5])
+    yOut = int(writeOutString[5:10])
+    if xOut > 32766:
+        return False
+    if xOut < 1:
+        return False
+    if yOut > 32766:
+        return False
+    if yOut < 1:
+        return False
+    return True
 
 while True:
     kinectCoords = connection.readline()[:-1].split(' ')
     leoCoords = toLeoCoords(kinectCoords[0], kinectCoords[1])
     writeOutStr = toWriteOutString(leoCoords)
-    ser.write(writeOutStr.encode('utf-8'))
+    print('sending "' + writeOutStr + '" to leo...' + '(' + writeOutStr[0:5] + ', ' + writeOutStr[5:10] + ')' )
+    if ValidityCheck(writeOutStr):
+        ser.write(writeOutStr.encode('utf-8'))
 
 connection.close()
