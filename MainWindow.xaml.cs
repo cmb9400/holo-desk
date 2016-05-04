@@ -100,7 +100,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
             this.InitializeComponent();
 
             // init the net connections
-            this.mouseStream = new MouseStreamNet(enable: true);
+            this.mouseStream = new MouseStreamNet(enable: false);
 
             // start the python script
             ProcessStartInfo start = new ProcessStartInfo();

@@ -84,7 +84,6 @@ def scaleCoord(coordinate, cameraWidth, cameraHeight, displayWidth, displayHeigh
     transform coordinate to be appropriate for the camera size and display size
     returns new coordinates
     """
-
     newX = int(displayWidth * (coordinate[0]/cameraWidth))
     newY = int(displayHeight * (coordinate[1]/cameraHeight))
 
@@ -242,7 +241,7 @@ def smoothTuple(points):
     ys = smooth(np.array(y), len(y), s)
     smoothed = []
     for i in range(0, len(points)):
-        smoothed.append((xs[i], ys[i]))
+        smoothed.append((int(xs[i]), int(ys[i])))
     return smoothed
 
 try:
@@ -255,7 +254,10 @@ try:
         smoothedBacklog = smoothTuple(dataQueue)
         cleaned = smoothedBacklog.pop(0)
         nPoint = dataQueue.pop(0)
-        print(int(cleaned[0]), int(cleaned[1]))
+        print(cleaned[0], cleaned[1])
+        blank_image = np.ones((1080//2 ,1920//2,3), np.uint8)
+        cv2.circle(blank_image, (cleaned[0]//2,cleaned[1]//2), 10, (0,255,0), -1)
+        cv2.imshow('output', blank_image)
         sys.stdout.flush()
 
 except Exception as e:
