@@ -60,13 +60,17 @@
         <StatusBar Grid.Row="3" HorizontalAlignment="Stretch" Name="statusBar" VerticalAlignment="Bottom" Background="White" Foreground="{StaticResource MediumGreyBrush}" Grid.ColumnSpan="2">
             <StatusBarItem Content="{Binding StatusText}" />
         </StatusBar>
-        <Slider x:Name="widthValue" HorizontalAlignment="Left" Margin="120,36,0,0" Grid.Row="1" VerticalAlignment="Top" Height="21" Width="200" Maximum="1000" Value="200" IsDirectionReversed="True" Grid.Column="1"/>
-        <Slider x:Name="slopeY" HorizontalAlignment="Left" Margin="120,81,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" Minimum="-10" TickFrequency="0.1" SmallChange="0.05" Value="23.76" Grid.Column="1" Height="23"/>
-        <Slider x:Name="slopeX" HorizontalAlignment="Left" Margin="120,109,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" Minimum="-10" Grid.Column="1" Height="20"/>
-        <Label x:Name="label_Copy" Content="Width" HorizontalAlignment="Left" Margin="62,32,0,0" Grid.Row="1" VerticalAlignment="Top" Grid.Column="1"/>
-        <Label x:Name="label_Copy1" Content="slopeY" HorizontalAlignment="Left" Margin="70,78,0,0" Grid.Row="1" VerticalAlignment="Top" Grid.Column="1"/>
-        <Label x:Name="label_Copy2" Content="slopeX" HorizontalAlignment="Left" Margin="70,103,0,0" Grid.Row="1" VerticalAlignment="Top" Grid.Column="1"/>
-        <Slider x:Name="bottomValue" HorizontalAlignment="Left" Margin="120,10,0,0" Grid.Row="1" VerticalAlignment="Top" Height="21" Width="200" Maximum="2000" Value="1414" Grid.Column="1" />
-        <Label x:Name="label" Content="Bottom" HorizontalAlignment="Left" Margin="55,10,0,0" Grid.Row="1" VerticalAlignment="Top" Grid.Column="1"/>
+        <Slider x:Name="widthValue" HorizontalAlignment="Left" Margin="78,36,0,0" Grid.Row="1" VerticalAlignment="Top" Height="21" Width="200" Maximum="1000" Value="200" IsDirectionReversed="True" Grid.Column="1"/>
+        <Slider x:Name="slopeY" HorizontalAlignment="Left" Margin="78,81,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" Minimum="-10" TickFrequency="0.1" SmallChange="0.05" Value="23.76" Grid.Column="1" Height="23"/>
+        <Slider x:Name="slopeX" HorizontalAlignment="Left" Margin="78,109,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" Minimum="-10" Grid.Column="1" Height="20"/>
+        <Label x:Name="label_Copy" Content="Width" HorizontalAlignment="Left" Margin="20,32,0,0" Grid.Row="1" VerticalAlignment="Top" Grid.Column="1"/>
+        <Label x:Name="label_Copy1" Content="slopeY" HorizontalAlignment="Left" Margin="28,78,0,0" Grid.Row="1" VerticalAlignment="Top" Grid.Column="1"/>
+        <Label x:Name="label_Copy2" Content="slopeX" HorizontalAlignment="Left" Margin="28,103,0,0" Grid.Row="1" VerticalAlignment="Top" Grid.Column="1"/>
+        <Slider x:Name="bottomValue" HorizontalAlignment="Left" Margin="78,10,0,0" Grid.Row="1" VerticalAlignment="Top" Height="21" Width="200" Maximum="2000" Value="1414" Grid.Column="1" />
+        <Label x:Name="label" Content="Bottom" HorizontalAlignment="Left" Margin="13,10,0,0" Grid.Row="1" VerticalAlignment="Top" Grid.Column="1"/>
+        <TextBlock x:Name="textBlock" Grid.Column="1" HorizontalAlignment="Left" Margin="283,10,0,0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding ElementName=bottomValue, Path=Value}" VerticalAlignment="Top" Width="98" TextAlignment="Right"/>
+        <TextBlock x:Name="textBlock_Copy" Grid.Column="1" HorizontalAlignment="Left" Margin="283,37,0,0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding ElementName=widthValue, Path=Value}" VerticalAlignment="Top" Width="98" TextAlignment="Right"/>
+        <TextBlock x:Name="textBlock_Copy1" Grid.Column="1" HorizontalAlignment="Left" Margin="283,83,0,0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding ElementName=slopeX, Path=Value}" VerticalAlignment="Top" Width="98" TextAlignment="Right"/>
+        <TextBlock x:Name="textBlock_Copy2" Grid.Column="1" HorizontalAlignment="Left" Margin="283,109,0,0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding ElementName=slopeY, Path=Value}" VerticalAlignment="Top" Width="98" TextAlignment="Right"/>
     </Grid>
 </Window>
