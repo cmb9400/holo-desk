@@ -10,6 +10,7 @@
 // https://github.com/PaulStoffregen/AltSoftSerial
 
 AltSoftSerial mySerial;
+int missedPackets = 0;
 
 enum states {
   NO_CLICK,
@@ -34,12 +35,14 @@ void interrupt() {
   }
 }
 
+
 void setup() {
-  mySerial.begin(115200);
-  Serial.begin(115200, SERIAL_8E1);    // serial / USB port
+  mySerial.begin(9600);
+  Serial.begin(115200);    // serial / USB port
   while (!Serial);
   AbsoluteMouse.begin();
   attachInterrupt(digitalPinToInterrupt(2), interrupt, RISING); //interrupt pin from Mega
+  //Serial.println("Ready");
 }
 
 void loop() {
@@ -62,21 +65,38 @@ void loop() {
       break;
   }
 
-  String cmd = "";
-  //command terminates with '.'
+  // commands from the pi terminate with '.'
+  char cmd[11] = "";
+  char cmd2[11] = ""; // sse parity \o/
 
   // check if byte available on the software serial port
   //receives zero-padded string of 16 bit coordinates (xy) ending with a '.'
   if (mySerial.available()) {
-    cmd = (mySerial.readStringUntil('.'));
-    mySerial.println(cmd);
-    Serial.println(cmd);
-    String dx = cmd.substring(0,5);
-    String dy = cmd.substring(5,10);
-    Serial.println(dx + " " + dy);
-    int x = dx.toInt();
-    int y = dy.toInt();
-    AbsoluteMouse.moveTo(x,y);
+    mySerial.readBytesUntil('.', cmd, 11);
+    while (!mySerial.available()) {}
+    mySerial.readBytesUntil('.', cmd2, 11);
+
+    String cmdStr = String(cmd);
+    String cmdStr2 = String(cmd2);
+
+    if (cmdStr.equals(cmdStr2)) {
+      //mySerial.println(cmd);
+      //Serial.println("cmd: " + cmdStr);
+      String dx = cmdStr.substring(0,5);
+      String dy = cmdStr.substring(5,10);
+      //Serial.println("goto " + dx + " " + dy);
+      int x = dx.toInt();
+      int y = dy.toInt();
+      AbsoluteMouse.moveTo(x,y);
+    } else {
+      missedPackets++;
+      if (missedPackets >= 15){
+        missedPackets = 0;
+        mySerial.readBytesUntil('.', cmd, 11);
+        loop();  
+      }
+      //Serial.println("Packet miss");      
+    }
   }
   
 }
