@@ -53,6 +53,6 @@ while True:
     kinectCoords = connection.readline()[:-1].split(' ')
     leoCoords = toLeoCoords(kinectCoords[0], kinectCoords[1])
     writeOutStr = toWriteOutString(leoCoords)
-    ser.write(writeOutStr.encode('utf-8'))
+    ser.write((writeOutStr*2).encode('utf-8'))
 
 connection.close()
