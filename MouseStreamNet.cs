@@ -13,9 +13,11 @@ namespace Microsoft.Samples.Kinect.DepthBasics
     {
         private TcpClient client = null;
         private StreamWriter netStream = null;
+        private bool enabled;
 
         public MouseStreamNet(bool enable = true)
         {
+            this.enabled = enable;
             if (enable)
             {
                 this.client = new TcpClient("129.21.207.17", 1313);
@@ -27,6 +29,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
         public void DataReceived (object sender, DataReceivedEventArgs args)
         {
             Console.WriteLine(args.Data);
+            if (!this.enabled) return;
             try
             {
                 this.netStream.WriteLine(args.Data);

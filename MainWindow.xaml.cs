@@ -112,8 +112,6 @@ namespace Microsoft.Samples.Kinect.DepthBasics
             start.RedirectStandardError = true;
             start.CreateNoWindow = false;
 
-
-
             try
             {
                 Process p = new Process();
@@ -318,37 +316,35 @@ namespace Microsoft.Samples.Kinect.DepthBasics
         /// <param name="maxDepth">The maximum reliable depth value for the frame</param>
         private unsafe void ProcessDepthFrameData(IntPtr depthFrameData, uint depthFrameDataSize, ushort minDepth, ushort maxDepth)
         {
+
             // depth frame data is a 16 bit value
             ushort* frameData = (ushort*)depthFrameData;
 
-            ushort clipMin = (ushort) this.bottomValue.Value; // 761
-            ushort clipMax = (ushort) this.widthValue.Value; // 1777
-            float slopeY = (float)this.slopeY.Value;       // 23.76
-            float slopeX = (float)this.slopeX.Value;       // 0
+            ushort bottom = (ushort) this.bottomValue.Value;
+            ushort width = (ushort) this.widthValue.Value;
+            float slopeY = (float)this.slopeY.Value;
+            float slopeX = (float)this.slopeX.Value;
+
             // convert depth to a visual representation
             for (int i = 0; i < (int)(depthFrameDataSize / this.depthFrameDescription.BytesPerPixel); ++i)
             {
+                // row col
+                int row = i / this.depthFrameDescription.Width;
+                int col = i % this.depthFrameDescription.Width;
+
                 // Get the depth for this pixel
                 ushort depth = frameData[i];
-                /* if (depth < clipMax)
-                {
-                    if (depth > clipMin)
-                    {
-                        int row = i / this.depthFrameDescription.Width;
-                        int col = i % this.depthFrameDescription.Width;
-                        depth -= clipMin;
-                        depth = (ushort)(depth * (float)ushort.MaxValue / (float)(clipMax - clipMin));
-                        depth += (ushort) (slopeY  * row);
-                        depth += (ushort) (slopeX * col);
-                    } else
-                    {
-                        depth = 0;
-                    }
-                } else
-                {
-                    depth = ushort.MaxValue;
-                }
-                */
+
+                // Slope adjustments
+                depth += (ushort)(slopeY * row);
+                depth += (ushort)(slopeX * col);
+
+                // Anything beyond our max, or less then our width, push to min
+                depth = (depth >= bottom) ? minDepth : depth;
+                depth = (depth <= (bottom - width)) ? minDepth : depth;
+
+                // clip
+                // this.depthPixels[i] = (byte)(depth >= minDepth && depth <= maxDepth ? (depth / MapDepthToByte) : 0);
                 this.depthPixels[i] = (byte)(depth / MapDepthToByte);
             }
 
