@@ -25,10 +25,10 @@ void setup() {
 void loop(){
   readAccel();
   int diff = abs(base[2]-reading[2]);
-  if (diff > 5) {
+  if (diff > 3) { // lower to increase sensitivity hight to decrease
     tap();
+    delay(200); // controlls the double tap thing high is less senistive
   }
-  delay(25);
 }
 
 void initAccel() {
