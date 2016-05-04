@@ -234,7 +234,10 @@ def smooth(x,window_len=11,window='hanning'):
     return y    
 
 def smoothTuple(points):
-    s = 'bartlett'
+    """
+    Smooths out a list of tupple xy valuess
+    """
+    s = 'flat'
     x = [x for (x, y) in points]
     y = [y for (x, y) in points]
     xs = smooth(np.array(x), len(x), s)
@@ -244,10 +247,11 @@ def smoothTuple(points):
         smoothed.append((int(xs[i]), int(ys[i])))
     return smoothed
 
-try:
+try: 
     backlog = 4
     dataQueue = []
     for point in absoluteTrack():
+        # Keep a buffer of previous point data to smooth on
         dataQueue.append(point)
         if (len(dataQueue) < backlog):
             continue
@@ -255,10 +259,13 @@ try:
         cleaned = smoothedBacklog.pop(0)
         nPoint = dataQueue.pop(0)
         print(cleaned[0], cleaned[1])
+        sys.stdout.flush()
+
+        # Show a scaled down version of the final transmitted positions
         blank_image = np.ones((1080//2 ,1920//2,3), np.uint8)
         cv2.circle(blank_image, (cleaned[0]//2,cleaned[1]//2), 10, (0,255,0), -1)
         cv2.imshow('output', blank_image)
-        sys.stdout.flush()
+        
 
 except Exception as e:
     with open('err.txt', mode='w') as f:
