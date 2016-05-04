@@ -79,6 +79,16 @@ def findPoint(image, brokenEdge):
 
     return [targetRow, targetColumn]
 
+def scaleCoord(coordinate, cameraWidth, cameraHeight, displayWidth, displayHeight):
+    """
+    transform coordinate to be appropriate for the camera size and display size
+    returns new coordinates
+    """
+
+    newX = int(displayWidth * (coordinate[0]/cameraWidth))
+    newY = int(displayHeight * (coordinate[1]/cameraHeight))
+
+    return [newX, newY]
 
 def my_print(s):
     with open('print_result.txt', mode='a') as f:
@@ -107,39 +117,65 @@ try:
 
         # transform the image read into a grayscale image
         # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+        # blur the image to reduce noise
+        # TODO tweak blur
         transImg = cv2.blur(step, (20,20))
+
+        # flip image vertically
+        transImg = cv2.flip(transImg, 0)
 
         # do our edge detection here
         # we do canny in this example, but this SHOULD BE TWEAKED based on your
         # application and real-world settings.
         # http://docs.opencv.org/2.4/modules/imgproc/doc/feature_detection.html
-        edges = cv2.Canny(transImg, 50, 50)
+        cannyEdges = cv2.Canny(transImg, 50, 50)
+
+        edges = cannyEdges
+        debug = edges
 
         # determine what edge we are coming from
+        # TODO: not pass a threshold value, and pick the largest one
+        # NB: LEFT and RIGHT have significantly different values then TOP and BOTTOM
+        # TODO: increase the threshold to prevent noise from triggering a detection
         coord = []
         targetEdge = -1
-        if ( checkEdge( edges, TOP, 20, 1000 ) ):
+        threshold = 1000
+        rowsToCheck = 15
+        if ( checkEdge( edges, TOP, rowsToCheck, threshold ) ):
             targetEdge = TOP
-        elif ( checkEdge( edges, LEFT, 20, 1000 ) ):
+        elif ( checkEdge( edges, LEFT, rowsToCheck, threshold ) ):
             targetEdge = LEFT
-        elif ( checkEdge( edges, BOTTOM, 20, 1000 ) ):
+        elif ( checkEdge( edges, BOTTOM, rowsToCheck, threshold ) ):
             targetEdge = BOTTOM
-        elif ( checkEdge( edges, RIGHT, 20, 1000 ) ):
+        elif ( checkEdge( edges, RIGHT, rowsToCheck, threshold ) ):
             targetEdge = RIGHT
 
         # if any edge was broken with some confidence, find a coordinate
         if (targetEdge > -1):
             coord = findPoint( edges, targetEdge )
-            print("{0} {1}".format(coord[0], coord[1]))
+
+            # Scale coordinate to be appropriate for the display
+            scaledCoord = scaleCoord(coord, np.shape(transImg)[0], np.shape(transImg)[1], 1920, 1080)
+            
+            # Send the value through the chain
+            print("{0} {1}".format(scaledCoord[0], scaledCoord[1]))
             sys.stdout.flush()
 
-        # Display the resulting frame
-        if (len(coord) > 0):
-            step[coord[0]-10:coord[0]+10, coord[1]-10:coord[1]+10] = 255
-            edges[coord[0]-10:coord[0]+10, coord[1]-10:coord[1]+10] = 255
-        cv2.imshow('gray', step)
-        cv2.imshow('edges', edges)
+            # Display the resulting frame
+            debug = cv2.cvtColor(edges,cv2.COLOR_GRAY2RGB)
+            debug[coord[0]-5:coord[0]+5, coord[1]-5:coord[1]+5, 0] = 255
+            brokenEdge = np.rot90(np.zeros(np.shape(debug)[:2]), targetEdge)
+            brokenEdge[0:20, :] = 255
+            brokenEdge = np.rot90(brokenEdge, 4 - targetEdge)
+            debug[:, :, 1] = brokenEdge
+
+
+            
+
+        cv2.imshow('crop', step)
         cv2.imshow('transform', transImg)
+        cv2.imshow('cannyEdges', debug)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break

@@ -100,7 +100,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
             this.InitializeComponent();
 
             // init the net connections
-            this.mouseStream = new MouseStreamNet();
+            this.mouseStream = new MouseStreamNet(enable: false);
 
             // start the python script
             ProcessStartInfo start = new ProcessStartInfo();
@@ -321,8 +321,8 @@ namespace Microsoft.Samples.Kinect.DepthBasics
             // depth frame data is a 16 bit value
             ushort* frameData = (ushort*)depthFrameData;
 
-            ushort clipMin = (ushort) this.minValue.Value; // 761
-            ushort clipMax = (ushort) this.maxValue.Value; // 1777
+            ushort clipMin = (ushort) this.bottomValue.Value; // 761
+            ushort clipMax = (ushort) this.widthValue.Value; // 1777
             float slopeY = (float)this.slopeY.Value;       // 23.76
             float slopeX = (float)this.slopeX.Value;       // 0
             // convert depth to a visual representation
@@ -330,7 +330,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
             {
                 // Get the depth for this pixel
                 ushort depth = frameData[i];
-                if (depth < clipMax)
+                /* if (depth < clipMax)
                 {
                     if (depth > clipMin)
                     {
@@ -348,12 +348,8 @@ namespace Microsoft.Samples.Kinect.DepthBasics
                 {
                     depth = ushort.MaxValue;
                 }
-                //ushort rel = (ushort) ((depth - smallest) * (ushort.MaxValue / (biggest - smallest)));
-                // To convert to a byte, we're mapping the depth value to the byte range.
-                // Values outside the reliable depth range are mapped to 0 (black).
+                */
                 this.depthPixels[i] = (byte)(depth / MapDepthToByte);
-//                this.depthPixels[i] = (byte)Math.Min((byte)0, this.depthPixels[i] - 128);
-//                this.depthPixels[i] *= 256 / (126 + 64);
             }
 
         }

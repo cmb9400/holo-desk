@@ -14,11 +14,14 @@ namespace Microsoft.Samples.Kinect.DepthBasics
         private TcpClient client = null;
         private StreamWriter netStream = null;
 
-        public MouseStreamNet()
+        public MouseStreamNet(bool enable = true)
         {
-            this.client = new TcpClient("8.8.8.8", 53);
-            NetworkStream ns = this.client.GetStream();
-            this.netStream = new StreamWriter(ns);
+            if (enable)
+            {
+                this.client = new TcpClient("129.21.207.17", 1313);
+                NetworkStream ns = this.client.GetStream();
+                this.netStream = new StreamWriter(ns);
+            }
         }
 
         public void DataReceived (object sender, DataReceivedEventArgs args)
@@ -26,7 +29,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
             Console.WriteLine(args.Data);
             try
             {
-                this.netStream.Write(args.Data);
+                this.netStream.WriteLine(args.Data);
                 this.netStream.Flush();
             } catch (IOException e)
             {
