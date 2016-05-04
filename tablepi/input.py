@@ -4,7 +4,7 @@ import struct
 import serial
 
 #to send to the leonardo
-ser = serial.Serial('/dev/ttyUSB0', 115200, parity=serial.PARITY_EVEN)
+ser = serial.Serial('/dev/ttyUSB0', 115200)
 ser.write("1000010000.".encode('utf-8'))
 
 #networking horseshit
@@ -67,8 +67,6 @@ while True:
     kinectCoords = connection.readline()[:-1].split(' ')
     leoCoords = toLeoCoords(kinectCoords[0], kinectCoords[1])
     writeOutStr = toWriteOutString(leoCoords)
-    print('sending "' + writeOutStr + '" to leo...' + '(' + writeOutStr[0:5] + ', ' + writeOutStr[5:10] + ')' )
-    if ValidityCheck(writeOutStr):
-        ser.write(writeOutStr.encode('utf-8'))
+    ser.write((writeOutStr*2).encode('utf-8'))
 
 connection.close()
