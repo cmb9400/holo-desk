@@ -27,7 +27,7 @@ void loop(){
   int diff = abs(base[2]-reading[2]);
   if (diff > 3) { // lower to increase sensitivity hight to decrease
     tap();
-    delay(200); // controlls the double tap thing high is less senistive
+    delay(300); // controlls the double tap thing high is less senistive
   }
 }
 
