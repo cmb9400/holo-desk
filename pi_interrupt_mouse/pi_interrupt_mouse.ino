@@ -8,8 +8,9 @@
 // See AltSoftSerial for more info
 // http://www.pjrc.com/teensy/td_libs_AltSoftSerial.html
 // https://github.com/PaulStoffregen/AltSoftSerial
-
 AltSoftSerial mySerial;
+
+// Number of corrupt
 int missedPackets = 0;
 
 // commands from the pi terminate with '.'
@@ -24,7 +25,15 @@ enum states {
   RELEASE,
 };
 
+enum serial_states {
+  NO_DATA,
+  DATA_ONE,
+  DATA_TWO,
+}
+
 enum states state = NO_CLICK;
+
+enum serial_states serial_state = NO_DATA;
 
 void interrupt() {
   switch(state) {
@@ -36,6 +45,28 @@ void interrupt() {
       break;
     case DRAG:
       state = RELEASE;
+  }
+}
+
+void processData() {
+  String cmdStr = String(cmd);
+  String cmdStr2 = String(cmd2);
+  if (cmdStr.equals(cmdStr2)) {
+    //mySerial.println(cmd);
+    //Serial.println("cmd: " + cmdStr);
+    String dx = cmdStr.substring(0,5);
+    String dy = cmdStr.substring(5,10);
+    //Serial.println("goto " + dx + " " + dy);
+    int x = dx.toInt();
+    int y = dy.toInt();
+    AbsoluteMouse.moveTo(x,y);
+  } else {
+    missedPackets++;
+    if (missedPackets >= 10){
+      missedPackets = 0;
+      serial_state = NO_DATA; // reset back to first
+    }
+    //Serial.println("Packet miss");      
   }
 }
 
@@ -52,10 +83,10 @@ void setup() {
 
 
 void loop() {
-  if (state == CLICK){
-    delay(500); //delay so if there's another interrupt it will change state
+  if (state == CLICK) {
+    //delay so if there's another interrupt it will change state
+    delay(500); 
   }
-  
   switch(state) {
     case CLICK:
       AbsoluteMouse.click();
@@ -70,33 +101,25 @@ void loop() {
       state = NO_CLICK;
       break;
   }
-
-  // check if byte available on the software serial port
-  //receives zero-padded string of 16 bit coordinates (xy) ending with a '.'
-  if (mySerial.available()) {
-    mySerial.readBytesUntil('.', cmd, 11);
-    mySerial.readBytesUntil('.', cmd2, 11);
-
-    String cmdStr = String(cmd);
-    String cmdStr2 = String(cmd2);
-
-    if (cmdStr.equals(cmdStr2)) {
-      //mySerial.println(cmd);
-      //Serial.println("cmd: " + cmdStr);
-      String dx = cmdStr.substring(0,5);
-      String dy = cmdStr.substring(5,10);
-      //Serial.println("goto " + dx + " " + dy);
-      int x = dx.toInt();
-      int y = dy.toInt();
-      AbsoluteMouse.moveTo(x,y);
-    } else {
-      missedPackets++;
-      if (missedPackets >= 15){
-        missedPackets = 0;
+  switch(serial_state) {
+    case NO_DATA:
+      // check if byte available on the software serial port
+      //receives zero-padded string of 16 bit coordinates (xy) ending with a '.'
+      if (mySerial.available()) {
         mySerial.readBytesUntil('.', cmd, 11);
+        serial_state = DATA_ONE;
       }
-      //Serial.println("Packet miss");      
-    }
+      break;
+    case DATA_ONE:
+      // check if byte available on the software serial port
+      //receives zero-padded string of 16 bit coordinates (xy) ending with a '.'
+      if (mySerial.available()) {
+        mySerial.readBytesUntil('.', cmd2, 11);
+        serial_state = DATA_TWO;
+      }
+      break;
+    case DATA_TWO: 
+      processData();
+      break;
   }
-  
 }
