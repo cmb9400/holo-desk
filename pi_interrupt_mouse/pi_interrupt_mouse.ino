@@ -52,11 +52,8 @@ void processData() {
   String cmdStr = String(cmd);
   String cmdStr2 = String(cmd2);
   if (cmdStr.equals(cmdStr2)) {
-    //mySerial.println(cmd);
-    //Serial.println("cmd: " + cmdStr);
     String dx = cmdStr.substring(0,5);
     String dy = cmdStr.substring(5,10);
-    //Serial.println("goto " + dx + " " + dy);
     int x = dx.toInt();
     int y = dy.toInt();
     AbsoluteMouse.moveTo(x,y);
@@ -64,28 +61,26 @@ void processData() {
     missedPackets++;
     if (missedPackets >= 10){
       missedPackets = 0;
+      mySerial.readBytesUntil('.', cmd, 11);
       serial_state = NO_DATA; // reset back to first
+      return; // return here so that serial_state is not set to NO_DATA
     }
-    //Serial.println("Packet miss");      
   }
+  serial_state = NO_DATA;
 }
 
 
 void setup() {
   mySerial.begin(9600);
-  Serial.begin(115200);    // serial / USB port
-  while (!Serial);
   AbsoluteMouse.begin();
   attachInterrupt(digitalPinToInterrupt(2), interrupt, RISING); //interrupt pin from Mega
-  //Serial.println("Ready");
 }
 
 
 
 void loop() {
   if (state == CLICK) {
-    //delay so if there's another interrupt it will change state
-    delay(500); 
+    delay(500); //delay so if there's another interrupt it will change state
   }
   switch(state) {
     case CLICK:
