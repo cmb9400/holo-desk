@@ -1,6 +1,9 @@
 body {
     margin: 0;            /* Reset default margin */
+    background: black;
+  	font-family: 'Ubuntu';
 }
+
 iframe {
     display: block;       /* iframes are inline by default */
     background: #000;
@@ -10,6 +13,31 @@ iframe {
 }
 
 #sitename {
-  text-align: left;
-  cursor: default;
+  	text-align: left;
+  	cursor: default;
+  	display:inline-block;
+}
+
+#project{
+	position: absolute;
+  	display: inline-block;
+  	text-align: center;
+  	text-shadow: 0px -1px 0px rgba(0,0,0,1.5);
+  	font-size: 50pt;
+  	font-weight: 800;
+  	color: white;/*rgb(99,99,99);*/
+}
+
+#bottom{
+
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -khtml-user-select: none;    /* Konqueror */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* Internet Explorer/Edge */
+  user-select: none;           /* Non-prefixed version, currently
+                                  not supported by any browser */
 }
