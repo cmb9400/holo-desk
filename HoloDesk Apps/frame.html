@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>SSE HoloDesk Apps</title>
+  <link rel="icon" type="image/png" href="./images/favicon.png" />
+  <link rel="stylesheet" href="./styles/frame.css">
+  <link rel="stylesheet" href="./styles/universal.css">
+
+  <style type="text/css"></style>
+  <link href='http://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700,300italic,400italic,500italic,700italic' rel='stylesheet' type='text/css'>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+</head>
+
+<body>
+  <div id="sitename">
+    <a href = "./index.html"><img src="./images/logo.png" style="width:200px"></a>
+  </div>
+
+
+
+<iframe id="myIframe" src="./index.html"></iframe>
+<script>
+  (function() {
+    var frameBaseSRC = document.getElementById("myIframe").src;
+    var frameQueryString = document.location.href.split("url=")[1];
+     if (frameQueryString != undefined) {
+      $("#myIframe").attr('src',frameQueryString);
+     }
+  })();
+</script>
+
+
+</body>
+
+</html>
