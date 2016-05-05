@@ -34,6 +34,7 @@ img{
   background: rgba(0,0,0,0.075);
   border: 3px solid rgba(0,0,0,0.2);
   border-radius:8px;
+	overflow: hidden;
   transition: background .25s;
 }
 
@@ -49,15 +50,15 @@ img{
   width: 200px;
   border: 0;
   height: 1px;
-  background-image: -webkit-linear-gradient(left, rgba(0,0,0,0), rgba(99,99,99,0.75), rgba(0,0,0,0)); 
-  background-image:    -moz-linear-gradient(left, rgba(0,0,0,0), rgba(99,99,99,0.75), rgba(0,0,0,0)); 
-  background-image:     -ms-linear-gradient(left, rgba(0,0,0,0), rgba(99,99,99,0.75), rgba(0,0,0,0)); 
-  background-image:      -o-linear-gradient(left, rgba(0,0,0,0), rgba(99,99,99,0.75), rgba(0,0,0,0)); 
+  background-image: -webkit-linear-gradient(left, rgba(0,0,0,0), rgba(99,99,99,0.75), rgba(0,0,0,0));
+  background-image:    -moz-linear-gradient(left, rgba(0,0,0,0), rgba(99,99,99,0.75), rgba(0,0,0,0));
+  background-image:     -ms-linear-gradient(left, rgba(0,0,0,0), rgba(99,99,99,0.75), rgba(0,0,0,0));
+  background-image:      -o-linear-gradient(left, rgba(0,0,0,0), rgba(99,99,99,0.75), rgba(0,0,0,0));
 }
 
 #content li h2{
   color: rgb(99,99,99);
-  margin-bottom:5px; 
+  margin-bottom:5px;
 }
 
 #content li p{
