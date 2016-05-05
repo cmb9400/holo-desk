@@ -38,11 +38,11 @@ void interrupt() {
 
 void setup() {
   mySerial.begin(9600);
-  Serial.begin(115200);    // serial / USB port
-  while (!Serial);
+  // Serial.begin(115200);
+  // while (!Serial);
   AbsoluteMouse.begin();
   attachInterrupt(digitalPinToInterrupt(2), interrupt, RISING); //interrupt pin from Mega
-  Serial.println("Ready");
+  // Serial.println("Ready");
 }
 
 void clickMouse(){
@@ -86,11 +86,11 @@ void loop() {
     String cmdStr2 = String(cmd2);
 
     if (cmdStr.equals(cmdStr2)) {
-      //mySerial.println(cmd);
-      //Serial.println("cmd: " + cmdStr);
+      // mySerial.println(cmd);
+      // Serial.println("cmd: " + cmdStr);
       String dx = cmdStr.substring(0,5);
       String dy = cmdStr.substring(5,10);
-      //Serial.println("goto " + dx + " " + dy);
+      // Serial.println("goto " + dx + " " + dy);
       int x = dx.toInt();
       int y = dy.toInt();
       AbsoluteMouse.moveTo(x,y);
@@ -101,7 +101,7 @@ void loop() {
         mySerial.readBytesUntil('.', cmd, 11);
         loop();  
       }
-      //Serial.println("Packet miss");      
+      // Serial.println("Packet miss");      
     }
   }
   
