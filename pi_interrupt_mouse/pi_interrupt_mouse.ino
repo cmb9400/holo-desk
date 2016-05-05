@@ -29,7 +29,7 @@ enum serial_states {
   NO_DATA,
   DATA_ONE,
   DATA_TWO,
-}
+};
 
 enum states state = NO_CLICK;
 
