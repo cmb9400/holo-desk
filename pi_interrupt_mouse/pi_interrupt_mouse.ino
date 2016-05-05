@@ -96,7 +96,7 @@ void loop() {
       AbsoluteMouse.moveTo(x,y);
     } else {
       missedPackets++;
-      if (missedPackets >= 15){
+      if (missedPackets >= 3){
         missedPackets = 0;
         mySerial.readBytesUntil('.', cmd, 11);
         loop();  
