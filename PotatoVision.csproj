@@ -132,6 +132,7 @@
     <Content Include="Scripts\mouse.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Scripts\smoothing.py" />
     <Content Include="Scripts\__init__.py" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -61,12 +61,12 @@
             <StatusBarItem Content="{Binding StatusText}" />
         </StatusBar>
         <Slider x:Name="widthValue" HorizontalAlignment="Left" Margin="78,36,0,0" Grid.Row="1" VerticalAlignment="Top" Height="21" Width="200" Maximum="2000" Value="900" Grid.Column="1"/>
-        <Slider x:Name="slopeY" HorizontalAlignment="Left" Margin="78,81,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" Minimum="-10" TickFrequency="0.1" SmallChange="0.05" Grid.Column="1" Height="23" Value="0.41746"/>
+        <Slider x:Name="slopeY" HorizontalAlignment="Left" Margin="78,81,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" Minimum="-10" TickFrequency="0.1" SmallChange="0.05" Grid.Column="1" Height="23" Value="0.57"/>
         <Slider x:Name="slopeX" HorizontalAlignment="Left" Margin="78,109,0,0" Grid.Row="1" VerticalAlignment="Top" Width="200" Minimum="-10" Grid.Column="1" Height="20"/>
         <Label x:Name="label_Copy" Content="Width" HorizontalAlignment="Left" Margin="20,32,0,0" Grid.Row="1" VerticalAlignment="Top" Grid.Column="1"/>
         <Label x:Name="label_Copy1" Content="slopeY" HorizontalAlignment="Left" Margin="28,78,0,0" Grid.Row="1" VerticalAlignment="Top" Grid.Column="1"/>
         <Label x:Name="label_Copy2" Content="slopeX" HorizontalAlignment="Left" Margin="28,103,0,0" Grid.Row="1" VerticalAlignment="Top" Grid.Column="1"/>
-        <Slider x:Name="bottomValue" HorizontalAlignment="Left" Margin="78,10,0,0" Grid.Row="1" VerticalAlignment="Top" Height="21" Width="200" Maximum="4500" Value="1382.67" Grid.Column="1" Minimum="500" />
+        <Slider x:Name="bottomValue" HorizontalAlignment="Left" Margin="78,10,0,0" Grid.Row="1" VerticalAlignment="Top" Height="21" Width="200" Maximum="4500" Value="1403.7" Grid.Column="1" Minimum="500" />
         <Label x:Name="label" Content="Bottom" HorizontalAlignment="Left" Margin="13,10,0,0" Grid.Row="1" VerticalAlignment="Top" Grid.Column="1"/>
         <TextBlock x:Name="textBlock" Grid.Column="1" HorizontalAlignment="Left" Margin="283,10,0,0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding ElementName=bottomValue, Path=Value}" VerticalAlignment="Top" Width="98" TextAlignment="Right"/>
         <TextBlock x:Name="textBlock_Copy" Grid.Column="1" HorizontalAlignment="Left" Margin="283,37,0,0" Grid.Row="1" TextWrapping="Wrap" Text="{Binding ElementName=widthValue, Path=Value}" VerticalAlignment="Top" Width="98" TextAlignment="Right"/>

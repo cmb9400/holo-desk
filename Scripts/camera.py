@@ -9,6 +9,60 @@ import itertools
 # Select video input; 0 for default video
 # cap = cv2.VideoCapture(1)
 
+def smooth(x,window_len=11,window='hanning'):
+    """smooth the data using a window with requested size.
+    
+    This method is based on the convolution of a scaled window with the signal.
+    The signal is prepared by introducing reflected copies of the signal 
+    (with the window size) in both ends so that transient parts are minimized
+    in the begining and end part of the output signal.
+    
+    input:
+        x: the input signal 
+        window_len: the dimension of the smoothing window; should be an odd integer
+        window: the type of window from 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'
+            flat window will produce a moving average smoothing.
+
+    output:
+        the smoothed signal
+        
+    example:
+
+    t=linspace(-2,2,0.1)
+    x=sin(t)+randn(len(t))*0.1
+    y=smooth(x)
+    
+    see also: 
+    
+    numpy.hanning, numpy.hamming, numpy.bartlett, numpy.blackman, numpy.convolve
+    scipy.signal.lfilter
+ 
+    TODO: the window parameter could be the window itself if an array instead of a string
+    NOTE: length(output) != length(input), to correct this: return y[(window_len/2-1):-(window_len/2)] instead of just y.
+    """ 
+     
+    if x.ndim != 1:
+        raise ValueError("smooth only accepts 1 dimension arrays.")
+
+    if x.size < window_len:
+        raise ValueError("Input vector needs to be bigger than window size.")
+        
+    if window_len<3:
+        return x
+    
+    if not window in ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']:
+        raise ValueError("Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'")
+
+    s=np.r_[x[window_len-1:0:-1],x,x[-1:-window_len:-1]]
+    #print(len(s))
+    if window == 'flat': #moving average
+        w=np.ones(window_len,'d')
+    else:
+        w=eval('np.'+window+'(window_len)')
+    
+    y=np.convolve(w/w.sum(),s,mode='valid')
+    return y
+
 TOP = 0; RIGHT = 1; BOTTOM = 2; LEFT = 3;
 def checkEdge(image, edge, rows, threshold=True):
     """
@@ -107,20 +161,22 @@ def absoluteTrack():
 
         # transform the image based on hardcoded numbers
         # because kinect has a fisheye lens
+        # also the coordinates are unflipped at this point
         # (tl, tr, br, bl) = rect
-        tl = (68, 32)
-        tr = (482, 26)
-        br = (510, 266)
-        bl = (48, 278)
-        step = fpt.four_point_transform(frame, np.array([tl, tr, br, bl]))
-
+        tl = (75, 42)
+        tr = (475, 38)
+        br = (515, 266)
+        bl = (53, 278)
+        transImg = fpt.four_point_transform(frame, np.array([tl, tr, br, bl]))
+        clean = transImg
         # transform the image read into a grayscale image
         # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         # blur the image to reduce noise
         # TODO tweak blur
-        transImg = cv2.blur(step, (8,8))
-
+        transImg = cv2.medianBlur(transImg, 5)
+        transImg = cv2.blur(transImg, (5,5))
+        
         # flip image vertically
         transImg = cv2.flip(transImg, 0)
 
@@ -141,14 +197,10 @@ def absoluteTrack():
         targetEdge = -1
         threshold = 1000
         rowsToCheck = 15
-        if ( checkEdge( edges, TOP, rowsToCheck, threshold ) ):
-            targetEdge = TOP
-        elif ( checkEdge( edges, LEFT, rowsToCheck, threshold ) ):
-            targetEdge = LEFT
-        elif ( checkEdge( edges, BOTTOM, rowsToCheck, threshold ) ):
+
+        if ( checkEdge( edges, BOTTOM, rowsToCheck, threshold ) ):
             targetEdge = BOTTOM
-        elif ( checkEdge( edges, RIGHT, rowsToCheck, threshold ) ):
-            targetEdge = RIGHT
+
 
         # if any edge was broken with some confidence, find a coordinate
         if (targetEdge > -1):
@@ -168,7 +220,6 @@ def absoluteTrack():
             brokenEdge = np.rot90(brokenEdge, 4 - targetEdge)
             debug[:, :, 1] = brokenEdge
 
-        cv2.imshow('crop', step)
         cv2.imshow('transform', transImg)
         cv2.imshow('cannyEdges', debug)
 
@@ -179,65 +230,11 @@ def absoluteTrack():
     cap.release()
     cv2.destroyAllWindows()
 
-def smooth(x,window_len=11,window='hanning'):
-    """smooth the data using a window with requested size.
-    
-    This method is based on the convolution of a scaled window with the signal.
-    The signal is prepared by introducing reflected copies of the signal 
-    (with the window size) in both ends so that transient parts are minimized
-    in the begining and end part of the output signal.
-    
-    input:
-        x: the input signal 
-        window_len: the dimension of the smoothing window; should be an odd integer
-        window: the type of window from 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'
-            flat window will produce a moving average smoothing.
-
-    output:
-        the smoothed signal
-        
-    example:
-
-    t=linspace(-2,2,0.1)
-    x=sin(t)+randn(len(t))*0.1
-    y=smooth(x)
-    
-    see also: 
-    
-    numpy.hanning, numpy.hamming, numpy.bartlett, numpy.blackman, numpy.convolve
-    scipy.signal.lfilter
- 
-    TODO: the window parameter could be the window itself if an array instead of a string
-    NOTE: length(output) != length(input), to correct this: return y[(window_len/2-1):-(window_len/2)] instead of just y.
-    """ 
-     
-    if x.ndim != 1:
-        raise ValueError("smooth only accepts 1 dimension arrays.")
-
-    if x.size < window_len:
-        raise ValueError("Input vector needs to be bigger than window size.")
-        
-    if window_len<3:
-        return x
-    
-    if not window in ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']:
-        raise ValueError("Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'")
-
-    s=np.r_[x[window_len-1:0:-1],x,x[-1:-window_len:-1]]
-    #print(len(s))
-    if window == 'flat': #moving average
-        w=np.ones(window_len,'d')
-    else:
-        w=eval('np.'+window+'(window_len)')
-    
-    y=np.convolve(w/w.sum(),s,mode='valid')
-    return y    
-
 def smoothTuple(points):
     """
     Smooths out a list of tupple xy valuess
     """
-    s = 'flat'
+    s = 'hanning'
     x = [x for (x, y) in points]
     y = [y for (x, y) in points]
     xs = smooth(np.array(x), len(x), s)
@@ -257,16 +254,17 @@ try:
             continue
         smoothedBacklog = smoothTuple(dataQueue)
         cleaned = smoothedBacklog.pop(0)
-        nPoint = dataQueue.pop(0)
-        print(cleaned[0], cleaned[1])
+        # pop the value so that smoothing works accurately 
+        dataQueue.pop(0)
+        # subtract 5 to hover the cursor in front of the hand
+        print(cleaned[0], cleaned[1]-5)
         sys.stdout.flush()
 
         # Show a scaled down version of the final transmitted positions
         blank_image = np.ones((1080//2 ,1920//2,3), np.uint8)
-        cv2.circle(blank_image, (cleaned[0]//2,cleaned[1]//2), 10, (0,255,0), -1)
+        cv2.circle(blank_image, (cleaned[0]//2,cleaned[1]//2), 5, (0,255,0), -1)
         cv2.imshow('output', blank_image)
         
-
 except Exception as e:
     with open('err.txt', mode='w') as f:
         f.write(str(e))
