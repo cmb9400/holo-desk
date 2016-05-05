@@ -12,10 +12,6 @@
 AltSoftSerial mySerial;
 int missedPackets = 0;
 
-// commands from the pi terminate with '.'
-char cmd[11] = "";
-char cmd2[11] = ""; // sse parity \o/
-
 enum states {
   NO_CLICK,
   CLICK,
@@ -46,13 +42,11 @@ void setup() {
   while (!Serial);
   AbsoluteMouse.begin();
   attachInterrupt(digitalPinToInterrupt(2), interrupt, RISING); //interrupt pin from Mega
-  //Serial.println("Ready");
+  Serial.println("Ready");
 }
 
-
-
-void loop() {
-  if (state == CLICK){
+void clickMouse(){
+    if (state == CLICK){
     delay(500); //delay so if there's another interrupt it will change state
   }
   
@@ -70,11 +64,22 @@ void loop() {
       state = NO_CLICK;
       break;
   }
+}
+
+void loop() {
+
+  clickMouse();
+
+  // commands from the pi terminate with '.'
+  char cmd[11] = "";
+  char cmd2[11] = ""; // sse parity \o/
 
   // check if byte available on the software serial port
   //receives zero-padded string of 16 bit coordinates (xy) ending with a '.'
   if (mySerial.available()) {
     mySerial.readBytesUntil('.', cmd, 11);
+    clickMouse();
+    while (!mySerial.available()) {}
     mySerial.readBytesUntil('.', cmd2, 11);
 
     String cmdStr = String(cmd);
@@ -94,6 +99,7 @@ void loop() {
       if (missedPackets >= 15){
         missedPackets = 0;
         mySerial.readBytesUntil('.', cmd, 11);
+        loop();  
       }
       //Serial.println("Packet miss");      
     }
