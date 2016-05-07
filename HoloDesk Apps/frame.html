@@ -11,19 +11,22 @@
   <link href='http://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700,300italic,400italic,500italic,700italic' rel='stylesheet' type='text/css'>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
   <style>
-    #project { 
+    #project {
       margin-top: 7px;
     }
   </style>
 </head>
 
 <body>
- 
+
 
 
 
 <iframe id="myIframe" src="./index.html"></iframe>
 <script>
+  function goHome() {
+    window.location = "./index.html";
+  }
   (function() {
     var frameBaseSRC = document.getElementById("myIframe").src;
     var frameQueryString = document.location.href.split("url=")[1];
@@ -34,7 +37,7 @@
 </script>
 
 
-<div id="bottom">
+<div id="bottom" onClick="goHome()">
  <div id="sitename">
     <a href = "./index.html"><img src="./images/big-grey-logo.png" draggable="false" style="height:80px; padding-top: 5px; padding-left: 5px;"></a>
   </div>
