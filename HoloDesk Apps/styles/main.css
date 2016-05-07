@@ -29,7 +29,7 @@ img{
 #content li{
   display: block;
   height: 200px;
-  width: 200px;
+  width: 250px;
   margin: 3px auto 3px auto;
   background: rgba(0,0,0,0.075);
   border: 3px solid rgba(0,0,0,0.2);
