@@ -69,7 +69,7 @@ namespace Microsoft.Samples.Kinect.DepthBasics
             if (!this.enabled) return;
             this.lastConnectAttempted = DateTime.Now;
             this.client = new TcpClient();
-            client.ReceiveTimeout = 100;
+            client.ReceiveTimeout = 1000;
             this.client.Connect(address, port);
             NetworkStream ns = this.client.GetStream();
             this.netStream = new StreamWriter(ns);

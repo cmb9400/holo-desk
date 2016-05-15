@@ -163,8 +163,8 @@ def absoluteTrack():
         # because kinect has a fisheye lens
         # also the coordinates are unflipped at this point
         # (tl, tr, br, bl) = rect
-        tl = (75, 42)
-        tr = (475, 38)
+        tl = (75, 49)
+        tr = (475, 45)
         br = (515, 266)
         bl = (53, 278)
         transImg = fpt.four_point_transform(frame, np.array([tl, tr, br, bl]))
@@ -256,8 +256,9 @@ try:
         cleaned = smoothedBacklog.pop(0)
         # pop the value so that smoothing works accurately 
         dataQueue.pop(0)
-        # subtract 5 to hover the cursor in front of the hand
-        print(cleaned[0], cleaned[1]-5)
+        # subtract pixels to hover the cursor in front of the hand
+        # also, because individual fingers sometimes get lost, this is a good approximate
+        print(cleaned[0], cleaned[1]-75)
         sys.stdout.flush()
 
         # Show a scaled down version of the final transmitted positions
